@@ -5,7 +5,45 @@ Also supports embedded-graphics's simulator,
 which allows running the same code on desktop, 
 though this requires adding sdl2 to your library path.
 
-Based on a raspberry pi template, see more info below
+Based on a raspberry pi template, see the template's instructions below for more information, but quickstart (for Windows) involves:
+```
+# Install rust from rustup.rs
+# Then:
+rustup target install thumbv6m-none-eabi
+cargo install probe-rs-tools elf2uf2-rs flip-link
+# Plug in your raspberry pi pico. 
+# If it doesn't show up as a usb device, unplug it, 
+# hold the small white button, and plug it in again
+# On linux, you might need something like libusb.
+
+# From the root of this project
+cargo run
+# or
+cargo run --release
+# And then the raspberry pi pico should update with the newly loaded program
+```
+If you want to run on desktop:
+- Download and unpack https://github.com/libsdl-org/SDL/releases/download/release-2.24.1/SDL2-devel-2.24.1-VC.zip
+- Create a folder at `../libsdl2/x86_64-pc-windows-msvc` from the perspective of the root of this folder.
+That means the `libsdl2` folder is in the same folder as the `visual-memory-rust` folder.
+- Find the `SDL2-2.24.1/lib/x64` folder in the extracted zip. Move the contents of that to your `libsdl2/x86_64-pc-windows-msvc` folder. You should now have the files `SDL2.dll`, `SDL2main.lib`, `SDL2test.lib` and `SDL2.lib` directly under `x86_64-pc-windows-msvc`.
+- `cd` into the desktop folder and run `cargo run` from there to launch the desktop app.
+- If you'd rather have the lib files elsewhere, tweak `./desktop/build.rs` to match.
+
+If you want to run on desktop on linux
+- Install libsdl2-dev or your distro's equivalent.
+- `cd` into the desktop folder and run `cargo run` from there to launch the desktop app.
+
+The program folder contains cross platform business code. 
+
+The raspberry-pi-pico folder contains main function and platform interaction for rpi.
+
+The desktop folder contains main function and platform interactions for sdl2 on desktop.
+
+If you want to use the gyro, add the `bmi160` package to raspberry-pi-pico, add new fields to the trait in `program/src/abstract_device.rs` and 
+optionally find a way to substitute gyro input on desktop. Then you can use the values sent through the trait in program.
+
+If you want to support another library, duplicate the raspberry-pi-pico folder and modify it to fit your platform.
 
 <h2>Template info</h2>
 
